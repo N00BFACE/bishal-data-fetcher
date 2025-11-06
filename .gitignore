@@ -1,0 +1,50 @@
+# Dependencies
+node_modules/
+*.yaml
+
+# Generated package files
+package/
+
+# Build files
+build/
+
+# Translations files
+languages/
+
+# OS files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+*~
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
+
+# WordPress specific
+wp-config.php
+.htaccess

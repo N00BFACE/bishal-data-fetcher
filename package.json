@@ -1,0 +1,16 @@
+{
+    "name": "bishal-data-fetcher",
+    "version": "1.0.0",
+    "description": "A WordPress plugin to fetch and display data from an external API.",
+    "author": "Bishal Shrestha",
+    "license": "GPL-3.0",
+    "scripts": {
+        "build": "wp-scripts build",
+        "start": "wp-scripts start",
+        "make-pot": "wp i18n make-pot . languages/bishal-data-fetcher.pot --exclude=node_modules,build",
+        "package": "pnpm build && mkdir -p package && VERSION=$(node -p \"require('./package.json').version\") && NAME=$(node -p \"require('./package.json').name\") && zip -r package/${NAME}-v${VERSION}.zip . -x 'node_modules/*' -x 'src/edit.js' -x 'src/index.js' -x 'src/block.json' -x 'src/render.php' -x '*.zip' -x 'package/*'"
+    },
+    "devDependencies": {
+        "@wordpress/scripts": "^30.27.0"
+    }
+}

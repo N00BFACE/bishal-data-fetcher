@@ -1,0 +1,29 @@
+/* Match WP admin 'wp-list-table' look on the frontend */
+.wp-block-bdf-table {
+	border: 1px solid #c3c4c7;   /* outer border like admin */
+	border-collapse: separate;
+	border-spacing: 0;
+	width: 100%;
+	background: #fff;
+}
+
+.wp-block-bdf-table thead th {
+	text-align: left;
+	padding: 8px 10px;
+	border-bottom: 1px solid #c3c4c7; /* header bottom border only */
+	background: #f6f7f7;              /* subtle header bg like admin */
+}
+
+.wp-block-bdf-table td {
+	padding: 8px 10px;
+	border: 0;                         /* no vertical borders */
+}
+
+.wp-block-bdf-table tbody tr:not(:last-child) td {
+	border-bottom: 1px solid #c3c4c7;  /* row separators only */
+}
+
+/* Stripes like 'striped' tables in admin */
+.wp-block-bdf-table tbody tr:nth-child(odd) td {
+	background: #f6f7f7;
+}
