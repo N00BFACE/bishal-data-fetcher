@@ -1,0 +1,38 @@
+{
+	"name": "bishal-shrestha/bishal-data-fetcher",
+	"description": "A WordPress plugin to fetch and display data from an external API",
+	"type": "wordpress-plugin",
+	"license": "GPL-3.0-or-later",
+	"authors": [
+		{
+			"name": "Bishal Shrestha"
+		}
+	],
+	"require": {
+		"php": ">=7.4"
+	},
+	"require-dev": {
+		"wp-coding-standards/wpcs": "^3.1",
+		"phpcompatibility/phpcompatibility-wp": "^2.1",
+		"dealerdirect/phpcodesniffer-composer-installer": "^1.0"
+	},
+	"autoload": {
+		"psr-4": {
+			"Bishal\\DataFetcher\\": "includes/"
+		},
+		"classmap": [
+			"includes/"
+		]
+	},
+	"config": {
+		"allow-plugins": {
+			"dealerdirect/phpcodesniffer-composer-installer": true
+		}
+	},
+	"scripts": {
+		"phpcs": "phpcs",
+		"phpcbf": "phpcbf",
+		"lint": "@phpcs",
+		"lint:fix": "@phpcbf"
+	}
+}

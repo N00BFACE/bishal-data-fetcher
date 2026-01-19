@@ -5,21 +5,23 @@
  * @package BishalDataFetcher
  */
 
+namespace Bishal\DataFetcher\Admin;
+
 /**
  * Admin class to manage backend functionalities.
  */
-class BDF_Admin {
+class Admin {
 	/**
 	 * The single instance of the class.
 	 *
-	 * @var BDF_Admin
+	 * @var Admin
 	 */
 	private static $instance = null;
 
 	/**
 	 * Get the plugin instance.
 	 *
-	 * @return BDF_Admin The single instance of the class.
+	 * @return Admin The single instance of the class.
 	 */
 	public static function get_instance() {
 		if ( null === self::$instance ) {
@@ -36,8 +38,6 @@ class BDF_Admin {
 		if ( ! class_exists( 'WP_List_Table' ) ) {
 			require_once ABSPATH . 'wp-admin/includes/class-wp-list-table.php';
 		}
-
-		require_once BDF_PATH . '/includes/admin/class-bdf-list-data.php';
 
 		// Add admin menu.
 		add_action( 'admin_menu', array( $this, 'add_admin_menu' ) );
@@ -72,7 +72,7 @@ class BDF_Admin {
 				<?php
 				settings_fields( 'bdf_settings_group' );
 				do_settings_sections( 'bdf_admin_page' );
-				$list_table = new BDF_List_Data();
+				$list_table = new ListTable();
 				$list_table->prepare_items();
 				$list_table->display();
 				?>

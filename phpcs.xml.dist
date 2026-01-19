@@ -1,0 +1,100 @@
+<?xml version="1.0"?>
+<ruleset name="Bishal Data Fetcher Coding Standards">
+	<description>A custom set of rules for the Bishal Data Fetcher WordPress plugin.</description>
+
+	<!-- What to scan -->
+	<file>.</file>
+
+	<!-- Exclude directories -->
+	<exclude-pattern>/vendor/*</exclude-pattern>
+	<exclude-pattern>/node_modules/*</exclude-pattern>
+	<exclude-pattern>/build/*</exclude-pattern>
+	<exclude-pattern>/package/*</exclude-pattern>
+	<exclude-pattern>/languages/*</exclude-pattern>
+
+	<!-- How to scan -->
+	<arg value="sp"/> <!-- Show sniff and progress -->
+	<arg name="basepath" value="."/> <!-- Strip the file paths down to the relevant bit -->
+	<arg name="colors"/>
+	<arg name="extensions" value="php"/>
+	<arg name="parallel" value="8"/> <!-- Enable parallel processing -->
+
+	<!-- Rules: Check PHP version compatibility -->
+	<config name="testVersion" value="7.4-"/>
+	<rule ref="PHPCompatibilityWP">
+		<include-pattern>*\.php$</include-pattern>
+	</rule>
+
+	<!-- Rules: WordPress Coding Standards -->
+	<config name="minimum_wp_version" value="6.0"/>
+
+	<rule ref="WordPress">
+		<!-- Exclude rules that conflict with plugin structure -->
+		<exclude name="WordPress.Files.FileName.InvalidClassFileName"/>
+		<exclude name="WordPress.Files.FileName.NotHyphenatedLowercase"/>
+	</rule>
+
+	<rule ref="WordPress-Extra"/>
+	<rule ref="WordPress-Docs"/>
+
+	<!-- Allow short array syntax -->
+	<rule ref="Generic.Arrays.DisallowShortArraySyntax.Found">
+		<severity>0</severity>
+	</rule>
+
+	<!-- Set text domain for i18n -->
+	<rule ref="WordPress.WP.I18n">
+		<properties>
+			<property name="text_domain" type="array">
+				<element value="bishal-data-fetcher"/>
+			</property>
+		</properties>
+	</rule>
+
+	<!-- Verify that the text_domain is set to the desired text-domain -->
+	<rule ref="WordPress.WP.I18n.MissingTranslatorsComment">
+		<type>warning</type>
+	</rule>
+
+	<!-- Verify that everything in the global namespace is prefixed with a theme specific prefix -->
+	<rule ref="WordPress.NamingConventions.PrefixAllGlobals">
+		<properties>
+			<property name="prefixes" type="array">
+				<element value="bdf"/>
+				<element value="bishal"/>
+				<element value="BDF"/>
+				<element value="Bishal"/>
+				<element value="Bishal_Data_Fetcher"/>
+				<element value="bishal_data_fetcher"/>
+			</property>
+		</properties>
+		<!-- Exclude render.php files from global variable checks - these are template files -->
+		<exclude-pattern>*/render.php</exclude-pattern>
+	</rule>
+
+	<!-- Allow short prefixes - BDF is an acceptable abbreviation for this plugin -->
+	<rule ref="WordPress.NamingConventions.PrefixAllGlobals.ShortPrefixPassed">
+		<severity>0</severity>
+	</rule>
+
+	<!-- Allow BDF_ prefix for classes, constants, and functions -->
+	<rule ref="WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedClassFound">
+		<severity>0</severity>
+	</rule>
+	<rule ref="WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedConstantFound">
+		<severity>0</severity>
+	</rule>
+	<rule ref="WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound">
+		<severity>0</severity>
+	</rule>
+
+	<!-- Disallow Yoda conditions -->
+	<rule ref="WordPress.PHP.YodaConditions">
+		<severity>0</severity>
+	</rule>
+
+	<!-- Exclude render.php from global variable override checks -->
+	<rule ref="WordPress.WP.GlobalVariablesOverride">
+		<exclude-pattern>*/render.php</exclude-pattern>
+	</rule>
+</ruleset>

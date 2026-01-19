@@ -7,12 +7,12 @@
  * @package BishalDataFetcher
  */
 
-// Get block attributes with defaults.
-$show_id         = isset( $attributes['showId'] ) ? $attributes['showId'] : true;
-$show_first_name = isset( $attributes['showFirstName'] ) ? $attributes['showFirstName'] : true;
-$show_last_name  = isset( $attributes['showLastName'] ) ? $attributes['showLastName'] : true;
-$show_email      = isset( $attributes['showEmail'] ) ? $attributes['showEmail'] : true;
-$show_date       = isset( $attributes['showDate'] ) ? $attributes['showDate'] : true;
+// Get block attributes with defaults and explicit boolean sanitization.
+$show_id         = isset( $attributes['showId'] ) ? rest_sanitize_boolean( $attributes['showId'] ) : true;
+$show_first_name = isset( $attributes['showFirstName'] ) ? rest_sanitize_boolean( $attributes['showFirstName'] ) : true;
+$show_last_name  = isset( $attributes['showLastName'] ) ? rest_sanitize_boolean( $attributes['showLastName'] ) : true;
+$show_email      = isset( $attributes['showEmail'] ) ? rest_sanitize_boolean( $attributes['showEmail'] ) : true;
+$show_date       = isset( $attributes['showDate'] ) ? rest_sanitize_boolean( $attributes['showDate'] ) : true;
 
 // Try to get cached data from transient.
 $transient_key = 'bdf_api_data';
@@ -27,14 +27,25 @@ if ( false === $api_data ) {
 		$api_data = json_decode( $body, true );
 
 		// Cache for 1 hour.
-		if ( json_last_error() === JSON_ERROR_NONE ) {
+		if ( json_last_error() === JSON_ERROR_NONE && is_array( $api_data ) ) {
 			set_transient( $transient_key, $api_data, HOUR_IN_SECONDS );
 		}
 	}
 }
 
-// Check if we have data to display.
-if ( empty( $api_data ) || empty( $api_data['data']['rows'] ) ) {
+// Validate api_data is an array.
+if ( ! is_array( $api_data ) ) {
+	$api_data = array();
+}
+
+// Check if we have data to display with proper array validation.
+$has_rows = isset( $api_data['data'] )
+	&& is_array( $api_data['data'] )
+	&& isset( $api_data['data']['rows'] )
+	&& is_array( $api_data['data']['rows'] )
+	&& ! empty( $api_data['data']['rows'] );
+
+if ( ! $has_rows ) {
 	?>
 	<div <?php echo wp_kses_data( get_block_wrapper_attributes() ); ?>>
 		<p><?php esc_html_e( 'No data available.', 'bishal-data-fetcher' ); ?></p>
@@ -43,15 +54,15 @@ if ( empty( $api_data ) || empty( $api_data['data']['rows'] ) ) {
 	return;
 }
 
-$title = isset( $api_data['data']['title'] ) ? $api_data['data']['title'] : '';
-$rows  = $api_data['data']['rows'];
+$table_title = isset( $api_data['data']['title'] ) ? sanitize_text_field( $api_data['data']['title'] ) : '';
+$rows        = $api_data['data']['rows'];
 ?>
 
 <div <?php echo wp_kses_data( get_block_wrapper_attributes() ); ?>>
-	<?php if ( ! empty( $title ) ) : ?>
-		<h3><?php echo esc_html( $title ); ?></h3>
+	<?php if ( ! empty( $table_title ) ) : ?>
+		<h3><?php echo esc_html( $table_title ); ?></h3>
 	<?php endif; ?>
-	
+
 	<table class="wp-block-bdf-table">
 		<thead>
 			<tr>
@@ -74,21 +85,27 @@ $rows  = $api_data['data']['rows'];
 		</thead>
 		<tbody>
 			<?php foreach ( $rows as $row ) : ?>
+				<?php
+				// Validate row is an array.
+				if ( ! is_array( $row ) ) {
+					continue;
+				}
+				?>
 				<tr>
 					<?php if ( $show_id ) : ?>
-						<td><?php echo esc_html( $row['id'] ); ?></td>
+						<td><?php echo isset( $row['id'] ) ? esc_html( intval( $row['id'] ) ) : ''; ?></td>
 					<?php endif; ?>
 					<?php if ( $show_first_name ) : ?>
-						<td><?php echo esc_html( $row['fname'] ); ?></td>
+						<td><?php echo isset( $row['fname'] ) ? esc_html( sanitize_text_field( $row['fname'] ) ) : ''; ?></td>
 					<?php endif; ?>
 					<?php if ( $show_last_name ) : ?>
-						<td><?php echo esc_html( $row['lname'] ); ?></td>
+						<td><?php echo isset( $row['lname'] ) ? esc_html( sanitize_text_field( $row['lname'] ) ) : ''; ?></td>
 					<?php endif; ?>
 					<?php if ( $show_email ) : ?>
-						<td><?php echo esc_html( $row['email'] ); ?></td>
+						<td><?php echo isset( $row['email'] ) ? esc_html( sanitize_email( $row['email'] ) ) : ''; ?></td>
 					<?php endif; ?>
 					<?php if ( $show_date ) : ?>
-						<td><?php echo esc_html( date_i18n( get_option( 'date_format' ) . ' ' . get_option( 'time_format' ), $row['date'] ) ); ?></td>
+						<td><?php echo isset( $row['date'] ) ? esc_html( date_i18n( get_option( 'date_format' ) . ' ' . get_option( 'time_format' ), intval( $row['date'] ) ) ) : ''; ?></td>
 					<?php endif; ?>
 				</tr>
 			<?php endforeach; ?>

@@ -21,14 +21,60 @@ define( 'BDF_VERSION', '1.0.0' );
 define( 'BDF_PATH', plugin_dir_path( __FILE__ ) );
 define( 'BDF_URL', plugin_dir_url( __FILE__ ) );
 
-// Include the main plugin class.
-require_once BDF_PATH . 'includes/class-bishal-data-fetcher.php';
+// Load Composer autoloader if available.
+if ( file_exists( BDF_PATH . 'vendor/autoload.php' ) ) {
+	require_once BDF_PATH . 'vendor/autoload.php';
+} else {
+	// Manual autoloader for when Composer is not available.
+	spl_autoload_register(
+		function ( $class_name ) {
+			// Project-specific namespace prefix.
+			$prefix = 'Bishal\\DataFetcher\\';
+
+			// Base directory for the namespace prefix.
+			$base_dir = BDF_PATH . 'includes/';
+
+			// Does the class use the namespace prefix?
+			$len = strlen( $prefix );
+			if ( strncmp( $prefix, $class_name, $len ) !== 0 ) {
+				// No, move to the next registered autoloader.
+				return;
+			}
+
+			// Get the relative class name.
+			$relative_class = substr( $class_name, $len );
+
+			// Replace namespace separators with directory separators.
+			// Convert CamelCase to lowercase with hyphens for WordPress convention.
+			$path_parts = explode( '\\', $relative_class );
+			$class_name = array_pop( $path_parts );
+
+			// Convert class name to file name (e.g., Plugin -> class-plugin.php).
+			$file_name = 'class-' . strtolower( preg_replace( '/([a-z])([A-Z])/', '$1-$2', $class_name ) ) . '.php';
+
+			// Build the path.
+			$path = '';
+			if ( ! empty( $path_parts ) ) {
+				$path = strtolower( implode( '/', $path_parts ) ) . '/';
+			}
+
+			$file = $base_dir . $path . $file_name;
+
+			// If the file exists, require it.
+			if ( file_exists( $file ) ) {
+				require_once $file;
+			}
+		}
+	);
+}
 
 /**
  * Initialize the plugin.
+ *
+ * @return void
  */
-function bdf_init() {
-	Bishal_Data_Fetcher::get_instance();
+function bishal_data_fetcher_init() {
+	\Bishal\DataFetcher\Plugin::get_instance();
 }
 
-add_action( 'plugins_loaded', 'bdf_init' );
+add_action( 'plugins_loaded', 'bishal_data_fetcher_init' );

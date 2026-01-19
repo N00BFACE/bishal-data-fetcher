@@ -5,21 +5,23 @@
  * @package BishalDataFetcher
  */
 
+namespace Bishal\DataFetcher;
+
 /**
  * Main plugin class.
  */
-class Bishal_Data_Fetcher {
+class Plugin {
 	/**
 	 * The single instance of the class.
 	 *
-	 * @var Bishal_Data_Fetcher
+	 * @var Plugin
 	 */
 	private static $instance = null;
 
 	/**
 	 * Get the plugin instance.
 	 *
-	 * @return Bishal_Data_Fetcher The single instance of the class.
+	 * @return Plugin The single instance of the class.
 	 */
 	public static function get_instance() {
 		if ( null === self::$instance ) {
@@ -37,11 +39,9 @@ class Bishal_Data_Fetcher {
 
 		// Load the admin and public classes.
 		if ( is_admin() ) {
-			require_once BDF_PATH . 'includes/admin/class-bdf-admin.php';
-			BDF_Admin::get_instance();
+			Admin\Admin::get_instance();
 		} else {
-			require_once BDF_PATH . 'includes/public/class-bdf-public.php';
-			BDF_Public::get_instance();
+			Frontend\Frontend::get_instance();
 		}
 
 		// Handle AJAX requests.
@@ -49,13 +49,12 @@ class Bishal_Data_Fetcher {
 		add_action( 'wp_ajax_nopriv_bdf_fetch_data', array( $this, 'handle_ajax_request' ) );
 
 		// Load the WP_CLI class only when WP_CLI is available.
-		if ( defined( 'WP_CLI' ) && WP_CLI ) {
-			require_once BDF_PATH . 'includes/cli/class-bdf-cli.php';
+		if ( defined( 'WP_CLI' ) && \WP_CLI ) {
+			CLI\CLI::register();
 		}
 
 		// Add block registration.
-		require_once BDF_PATH . 'includes/blocks/class-bdf-blocks.php';
-		BDF_Blocks::get_instance();
+		Blocks\Blocks::get_instance();
 	}
 
 	/**

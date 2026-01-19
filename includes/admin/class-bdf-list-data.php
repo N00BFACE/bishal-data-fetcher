@@ -5,10 +5,12 @@
  * @package BishalDataFetcher
  */
 
+namespace Bishal\DataFetcher\Admin;
+
 /**
- * BDF List Data Class.
+ * List Table Class for displaying API data.
  */
-class BDF_List_Data extends WP_List_Table {
+class ListTable extends \WP_List_Table {
 	/**
 	 * Define the columns for the list table.
 	 *
@@ -33,7 +35,7 @@ class BDF_List_Data extends WP_List_Table {
 	 * @return mixed The column value.
 	 */
 	public function column_default( $item, $column_name ) {
-		return $item[ $column_name ];
+		return isset( $item[ $column_name ] ) ? $item[ $column_name ] : '';
 	}
 
 	/**

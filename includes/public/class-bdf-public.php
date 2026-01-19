@@ -1,30 +1,39 @@
 <?php
 /**
- * Bishal Data Fetcher Plugin Public Class.
+ * Bishal Data Fetcher Plugin Frontend Class.
  *
  * @package BishalDataFetcher
  */
 
+namespace Bishal\DataFetcher\Frontend;
+
 /**
- * Admin class to manage frontend functionalities.
+ * Frontend class to manage public-facing functionalities.
  */
-class BDF_Public {
+class Frontend {
 	/**
 	 * The single instance of the class.
 	 *
-	 * @var BDF_Public
+	 * @var Frontend
 	 */
 	private static $instance = null;
 
 	/**
 	 * Get the plugin instance.
 	 *
-	 * @return BDF_Public The single instance of the class.
+	 * @return Frontend The single instance of the class.
 	 */
 	public static function get_instance() {
 		if ( null === self::$instance ) {
 			self::$instance = new self();
 		}
 		return self::$instance;
+	}
+
+	/**
+	 * Constructor.
+	 */
+	private function __construct() {
+		// Frontend initialization hooks can be added here.
 	}
 }

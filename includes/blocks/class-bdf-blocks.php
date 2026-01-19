@@ -5,21 +5,23 @@
  * @package BishalDataFetcher
  */
 
+namespace Bishal\DataFetcher\Blocks;
+
 /**
  * Class to handle block registration and rendering.
  */
-class BDF_Blocks {
+class Blocks {
 	/**
 	 * The single instance of the class.
 	 *
-	 * @var BDF_Blocks
+	 * @var Blocks
 	 */
 	private static $instance = null;
 
 	/**
 	 * Get the plugin instance.
 	 *
-	 * @return BDF_Blocks The single instance of the class.
+	 * @return Blocks The single instance of the class.
 	 */
 	public static function get_instance() {
 		if ( null === self::$instance ) {
